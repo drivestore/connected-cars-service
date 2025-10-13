@@ -1,0 +1,19 @@
+{
+  "name": "connected-cars-service",
+  "module": "src/index.js",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "bun src/index.js"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "node-cron": "^4.2.1",
+    "pg": "^8.16.3"
+  }
+}
