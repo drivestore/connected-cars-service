@@ -17,6 +17,7 @@ async function job()
         let provider = row.provider
         let Echos = new EchosCustomerApi(row.credentials.privacy_key, row.credentials.account_id)   
         let vehicles = await Echos.getVehicles()
+        vehicle.licensePlate = vehicle.licensePlate.replaceAll("-", "").toUpperCase()
         console.log("[+] Fetched " + vehicles.length + " vehicles")
         vehicles.forEach(vehicle => {
             pool.query(`INSERT INTO sync.connected_cars_data (brch_id, license_plate, provider, data ,created_at, updated_at) 
