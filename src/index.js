@@ -17,9 +17,9 @@ async function job()
         let provider = row.provider
         let Echos = new EchosCustomerApi(row.credentials.privacy_key, row.credentials.account_id)   
         let vehicles = await Echos.getVehicles()
-        vehicle.licensePlate = vehicle.licensePlate.replaceAll("-", "").toUpperCase()
         console.log("[+] Fetched " + vehicles.length + " vehicles")
         vehicles.forEach(vehicle => {
+            vehicle.licensePlate = vehicle.licensePlate.replaceAll("-", "").toUpperCase()
             pool.query(`INSERT INTO sync.connected_cars_data (brch_id, license_plate, provider, data ,created_at, updated_at) 
                         VALUES ($1, $2, $3, $4 , now_utc() , now_utc() )
                         ON CONFLICT (brch_id, license_plate, provider) DO UPDATE SET data = $4, updated_at = now_utc()
