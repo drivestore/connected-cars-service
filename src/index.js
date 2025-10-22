@@ -7,11 +7,13 @@ async function job()
 {
     console.log("[+] Starting job")
     // load all credentials from the database
-    let credentials = await pool.query(`SELECT * FROM sync.connected_cars_credentials`)
+    let credentials = await pool.query(`SELECT * FROM sync.connected_cars_credentials where deleted = false`)
     console.log("[+] Fetched " + credentials.rows.length + " credentials")
 
     for(let row of credentials.rows)
     {
+        try
+        {
         console.log("[+] Processing vehicle " + row.license_plate + " for branch " + row.brch_id + " and provider " + row.provider)
         let brch_id = row.brch_id
         let provider = row.provider
@@ -26,7 +28,12 @@ async function job()
                         `, [brch_id, vehicle.licensePlate, provider, JSON.stringify(vehicle)])
         })
         console.log("[+] Upserted " + vehicles.length + " vehicles")
-        
+        }
+        catch(error)
+        {
+            console.error("[!] Error processing vehicles for "+ row.license_plate + " for branch " + row.brch_id + " and provider " + row.provider + " : " + error)
+            console.error("[x] Credentials: " + JSON.stringify(row.credentials))
+        }
     }
 
     console.log("[+] Done")
